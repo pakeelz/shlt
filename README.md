@@ -32,5 +32,5 @@ cargo install --path .
 ### Melalui One-line Script (Rekomendasi)
 
 ```bash
-curl -fsSL [https://raw.githubusercontent.com/pakeelz/shlt/main/install.sh](https://raw.githubusercontent.com/pakeelz/shlt/main/install.sh) | bash
+curl -fsSL https://raw.githubusercontent.com/pakeelz/shlt/main/install.sh | bash
 ```
