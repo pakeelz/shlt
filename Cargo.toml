@@ -1,0 +1,27 @@
+[package]
+name = "shlt"
+version = "0.1.0"
+authors = ["Pakel <wppakel@gmail.com>"]
+edition = "2024"
+description = "Applikasi terminal yang menampilkan jadwal sholat di daerah Indonesia"
+keywords = ["cli"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+chrono = "0.4.45"
+clap = { version = "4.6.6", features = ["derive", "wrap_help"] }
+comfy-table = "8.0.0"
+dialoguer = { version = "0.12.0", features = ["fuzzy-select"] }
+indicatif = { version = "0.18.6", features = ["tokio"] }
+reqwest = { version = "0.13.4", features = ["json"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+tokio = { version = "1.53.1", features = ["full"] }
+toml = "1.1.4"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
