@@ -23,8 +23,14 @@
 
 ### Dari Repositori (Source Code)
 
-1. Clone repositori ini:
-   ```bash
-   git clone [https://github.com/username/shlt.git](https://github.com/username/shlt.git)
-   cd shlt
-   cargo install --path .
+```bash
+git clone [https://github.com/username/shlt.git](https://github.com/username/shlt.git)
+cd shlt
+cargo install --path .
+```
+
+### Melalui One-line Script (Rekomendasi)
+
+```bash
+curl -fsSL [https://raw.githubusercontent.com/pakeelz/shlt/main/install.sh](https://raw.githubusercontent.com/pakeelz/shlt/main/install.sh) | bash
+```
