@@ -1,4 +1,4 @@
-# shlt
+# 🕌 shlt
 
 > Aplikasi CLI interaktif berbasis Rust untuk mengecek jadwal sholat di seluruh Indonesia via [equran.id API](https://equran.id/apidev/shalat).
 
