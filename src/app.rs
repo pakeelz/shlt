@@ -22,20 +22,24 @@ pub async fn run() -> Result<(), AppError> {
             .await?;
 
             let jadwal = res.get_jadwal_today();
-            view::print_jadwal_table(jadwal);
+            if cli.is_raw() {
+                view::print_raw_jadwal(jadwal);
+            } else {
+                view::print_jadwal_table(jadwal);
+            }
 
             if cli.is_default() {
                 write_config(provinsi, kabkota)?
             }
         } else {
-            run_with_provinsi_data(&provinsi, cli.is_default()).await?;
+            run_with_provinsi_data(&provinsi, cli.is_default(), cli.is_raw()).await?;
         }
     } else {
         match read_config() {
             Ok(loc) => {
                 if cli.is_new() {
                     let provinsi = select_provinsi(PROVINSI).unwrap();
-                    run_with_provinsi_data(&provinsi, cli.is_default()).await?;
+                    run_with_provinsi_data(&provinsi, cli.is_default(), cli.is_raw()).await?;
                 } else {
                     let res = animate::with_spinner(
                         "Tunggu sebentar",
@@ -46,12 +50,16 @@ pub async fn run() -> Result<(), AppError> {
                     match res {
                         Ok(res) => {
                             let jadwal = res.get_jadwal_today();
-                            view::print_jadwal_table(jadwal);
+                            if cli.is_raw() {
+                                view::print_raw_jadwal(jadwal);
+                            } else {
+                                view::print_jadwal_table(jadwal);
+                            }
                         }
                         Err(e) => match e {
                             AppError::RegionNotFound => {
                                 let provinsi = select_provinsi(PROVINSI).unwrap();
-                                run_with_provinsi_data(&provinsi, true).await?;
+                                run_with_provinsi_data(&provinsi, true, cli.is_raw()).await?;
                             }
                             _ => eprintln!("{e}"),
                         },
@@ -60,7 +68,7 @@ pub async fn run() -> Result<(), AppError> {
             }
             Err(_) => {
                 let provinsi = select_provinsi(PROVINSI).unwrap();
-                run_with_provinsi_data(&provinsi, cli.is_default()).await?;
+                run_with_provinsi_data(&provinsi, cli.is_default(), cli.is_raw()).await?;
             }
         }
     }
@@ -68,7 +76,11 @@ pub async fn run() -> Result<(), AppError> {
     Ok(())
 }
 
-async fn run_with_provinsi_data(provinsi: &str, is_default: bool) -> Result<(), AppError> {
+async fn run_with_provinsi_data(
+    provinsi: &str,
+    is_default: bool,
+    is_raw: bool,
+) -> Result<(), AppError> {
     let kabkota_data = animate::with_spinner("Mengambil data", get_possible_kabkota(provinsi))
         .await?
         .get_data_kota();
@@ -76,9 +88,12 @@ async fn run_with_provinsi_data(provinsi: &str, is_default: bool) -> Result<(), 
 
     let jadwal =
         animate::with_spinner("Tunggu sebentar", get_jadwal_sholat(provinsi, kabkota)).await?;
-    // let jadwal = get_jadwal_sholat(provinsi, kabkota).await?;
 
-    view::print_jadwal_table(jadwal.get_jadwal_today());
+    if is_raw {
+        view::print_raw_jadwal(jadwal.get_jadwal_today());
+    } else {
+        view::print_jadwal_table(jadwal.get_jadwal_today());
+    }
 
     if is_default {
         write_config(provinsi.to_string(), kabkota.to_string())?;

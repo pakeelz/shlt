@@ -17,6 +17,10 @@ pub struct Args {
     /// Menampilkan menu interaktif
     #[arg(short)]
     new: bool,
+
+    /// Menampilkan raw data, urutan dari subuh sampai isya
+    #[arg(short, long)]
+    raw: bool,
 }
 
 impl Args {
@@ -34,6 +38,10 @@ impl Args {
 
     pub fn is_new(&self) -> bool {
         self.new
+    }
+
+    pub fn is_raw(&self) -> bool {
+        self.raw
     }
 }
 

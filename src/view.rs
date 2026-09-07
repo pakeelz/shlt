@@ -24,6 +24,15 @@ pub fn print_jadwal_table(jadwal: JadwalShalat) {
     println!("\n{}", table);
 }
 
+pub fn print_raw_jadwal(jadwal: JadwalShalat) {
+    println!("{}", jadwal.kabkota);
+    println!("{}", jadwal.subuh);
+    println!("{}", jadwal.dzuhur);
+    println!("{}", jadwal.ashar);
+    println!("{}", jadwal.maghrib);
+    println!("{}", jadwal.isya);
+}
+
 pub fn select_provinsi(provinsi: [&str; 34]) -> Result<String, AppError> {
     let selection = FuzzySelect::with_theme(&ColorfulTheme::default())
         .with_prompt("Pilih Provinsi:")
