@@ -21,7 +21,7 @@ pub fn print_jadwal_table(jadwal: JadwalShalat) {
         .add_row(vec!["Ashar", &jadwal.ashar])
         .add_row(vec!["Maghrib", &jadwal.maghrib])
         .add_row(vec!["Isya", &jadwal.isya]);
-    println!("\n{}", table);
+    println!("\n{}\n", table);
 }
 
 pub fn print_raw_jadwal(jadwal: JadwalShalat) {
