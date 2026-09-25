@@ -37,27 +37,36 @@ pub const PROVINSI: [&str; 34] = [
     "Sumatera Utara",
 ];
 
-#[derive(Deserialize, Debug)]
-pub struct Shalat {
-    data: Data,
+pub trait View {
+    fn get_kabkota(&self) -> &str;
+    fn get_subuh(&self) -> &str;
+    fn get_dzuhur(&self) -> &str;
+    fn get_ashar(&self) -> &str;
+    fn get_maghrib(&self) -> &str;
+    fn get_isya(&self) -> &str;
 }
 
 #[derive(Deserialize, Debug)]
-struct Data {
-    kabkota: String,
-    jadwal: Vec<Jadwal>,
+pub struct Shalat {
+    pub data: Data,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Data {
+    pub kabkota: String,
+    pub jadwal: Vec<Jadwal>,
 }
 
 #[allow(dead_code)]
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, Default)]
 pub struct Jadwal {
     tanggal: u8,
-    tanggal_lengkap: String,
-    subuh: String,
-    dzuhur: String,
-    ashar: String,
-    maghrib: String,
-    isya: String,
+    pub tanggal_lengkap: String,
+    pub subuh: String,
+    pub dzuhur: String,
+    pub ashar: String,
+    pub maghrib: String,
+    pub isya: String,
 }
 
 #[allow(dead_code)]
@@ -77,16 +86,37 @@ pub struct KabKota {
 }
 
 impl Shalat {
-    pub fn get_jadwal_today(&self) -> JadwalShalat {
+    pub fn get_jadwal_today(self) -> JadwalShalat {
         let now = chrono::Local::now()
             .format("%d")
             .to_string()
             .parse::<usize>()
             .unwrap();
 
-        let kabkota = self.data.kabkota.clone();
+        let kabkota = self.data.kabkota;
         let jadwal = self.data.jadwal[now - 1].clone();
         JadwalShalat::from_jadwal_and_kabkota(jadwal, kabkota)
+    }
+}
+
+impl View for JadwalShalat {
+    fn get_kabkota(&self) -> &str {
+        &self.kabkota
+    }
+    fn get_subuh(&self) -> &str {
+        &self.subuh
+    }
+    fn get_dzuhur(&self) -> &str {
+        &self.dzuhur
+    }
+    fn get_ashar(&self) -> &str {
+        &self.ashar
+    }
+    fn get_maghrib(&self) -> &str {
+        &self.maghrib
+    }
+    fn get_isya(&self) -> &str {
+        &self.isya
     }
 }
 

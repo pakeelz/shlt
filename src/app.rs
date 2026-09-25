@@ -3,6 +3,7 @@ use clap::Parser;
 use crate::{
     animate,
     api::{get_jadwal_sholat, get_possible_kabkota},
+    cache::{self},
     cli::Args,
     error::AppError,
     models::PROVINSI,
@@ -41,14 +42,36 @@ pub async fn run() -> Result<(), AppError> {
                     let provinsi = select_provinsi(PROVINSI).unwrap();
                     run_with_provinsi_data(&provinsi, cli.is_default(), cli.is_raw()).await?;
                 } else {
+                    if let Ok(is_update) = cache::is_update() {
+                        if is_update {
+                            if let Ok(cache) = cache::read_cache() {
+                                if cli.is_raw() {
+                                    view::print_raw_jadwal(cache);
+                                } else {
+                                    view::print_jadwal_table(cache);
+                                }
+                            }
+                            return Ok(());
+                        }
+                    }
+
                     let res = animate::with_spinner(
                         "Tunggu sebentar",
                         get_jadwal_sholat(loc.get_provinsi(), loc.get_kabkota()),
                     )
                     .await;
-                    // let res = get_jadwal_sholat(loc.get_provinsi(), loc.get_kabkota()).await;
                     match res {
                         Ok(res) => {
+                            // Check if cache need to update
+                            match cache::is_update() {
+                                Ok(is_update) => {
+                                    if !is_update {
+                                        // Soon
+                                        if let Err(_e) = cache::write_cache(&res) {}
+                                    }
+                                }
+                                Err(_e) => {}
+                            }
                             let jadwal = res.get_jadwal_today();
                             if cli.is_raw() {
                                 view::print_raw_jadwal(jadwal);
@@ -88,6 +111,9 @@ async fn run_with_provinsi_data(
 
     let jadwal =
         animate::with_spinner("Tunggu sebentar", get_jadwal_sholat(provinsi, kabkota)).await?;
+
+    // Soon
+    if let Err(_e) = cache::write_cache(&jadwal) {}
 
     if is_raw {
         view::print_raw_jadwal(jadwal.get_jadwal_today());

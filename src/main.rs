@@ -1,6 +1,7 @@
 mod animate;
 mod api;
 mod app;
+mod cache;
 mod cli;
 mod dev;
 mod error;

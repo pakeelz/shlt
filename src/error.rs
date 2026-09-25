@@ -10,6 +10,7 @@ pub enum AppError {
     ValidateInputProvinsiError,
     IoError(String),
     ConfigError,
+    CacheError(String),
     ConfigNotFound,
     UnknownError(String),
 }
@@ -28,6 +29,8 @@ impl fmt::Display for AppError {
                 write!(f, "Config error")
             }
             AppError::ConfigNotFound => write!(f, "Config tidak ditemukan"),
+            AppError::CacheError(e) => write!(f, "Error: {e}"),
+
             AppError::UnknownError(e) => write!(f, "Error: {}", e),
         }
     }
@@ -75,5 +78,11 @@ impl From<toml::de::Error> for AppError {
 impl From<dialoguer::Error> for AppError {
     fn from(err: dialoguer::Error) -> Self {
         Self::UnknownError(err.to_string())
+    }
+}
+
+impl From<serde_json::Error> for AppError {
+    fn from(value: serde_json::Error) -> Self {
+        Self::CacheError(value.to_string())
     }
 }
