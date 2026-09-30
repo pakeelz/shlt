@@ -21,6 +21,9 @@ pub struct Args {
     /// Menampilkan raw data, urutan dari subuh sampai isya
     #[arg(short, long)]
     raw: bool,
+
+    #[arg(short, long, hide = true)]
+    tui: bool,
 }
 
 impl Args {
@@ -42,6 +45,10 @@ impl Args {
 
     pub fn is_raw(&self) -> bool {
         self.raw
+    }
+
+    pub fn is_tui(&self) -> bool {
+        self.tui
     }
 }
 

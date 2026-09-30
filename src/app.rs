@@ -8,11 +8,30 @@ use crate::{
     error::AppError,
     models::PROVINSI,
     storage::{read_config, write_config},
+    tui::{App, AppState},
     view::{self, select_kabkota, select_provinsi},
 };
 
 pub async fn run() -> Result<(), AppError> {
     let cli = Args::parse();
+
+    if cli.is_tui() {
+        match cache::read_cache() {
+            Ok(cache) => {
+                ratatui::run(|terminal| {
+                    let mut app = App::new(AppState::View(cache));
+                    app.run(terminal).unwrap();
+                });
+            }
+            Err(_) => {
+                ratatui::run(|terminal| {
+                    let mut app = App::new(AppState::<()>::NoCache);
+                    app.run(terminal).unwrap();
+                });
+            }
+        }
+        return Ok(());
+    }
 
     if let Some(provinsi) = cli.get_provinsi() {
         if let Some(kabkota) = cli.get_kabkota() {

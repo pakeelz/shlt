@@ -8,6 +8,7 @@ mod error;
 mod models;
 mod req;
 mod storage;
+mod tui;
 mod view;
 
 #[tokio::main]

@@ -46,6 +46,27 @@ pub trait View {
     fn get_isya(&self) -> &str;
 }
 
+impl View for () {
+    fn get_kabkota(&self) -> &str {
+        ""
+    }
+    fn get_ashar(&self) -> &str {
+        ""
+    }
+    fn get_dzuhur(&self) -> &str {
+        ""
+    }
+    fn get_isya(&self) -> &str {
+        ""
+    }
+    fn get_maghrib(&self) -> &str {
+        ""
+    }
+    fn get_subuh(&self) -> &str {
+        ""
+    }
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Shalat {
     pub data: Data,
@@ -77,6 +98,19 @@ pub struct JadwalShalat {
     pub ashar: String,
     pub maghrib: String,
     pub isya: String,
+}
+
+impl Default for JadwalShalat {
+    fn default() -> Self {
+        Self {
+            kabkota: "Kab. Jombang".to_string(),
+            subuh: "04:00".to_string(),
+            dzuhur: "11:30".to_string(),
+            ashar: "14:30".to_string(),
+            maghrib: "17:30".to_string(),
+            isya: "18:35".to_string(),
+        }
+    }
 }
 
 #[allow(dead_code)]
