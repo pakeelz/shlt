@@ -64,4 +64,6 @@ Terminal=true
 Categories=Utility;Development;
 EOF
 
+update-desktop-database "$HOME/.local/share/applications/"
+
 echo "==> Instalasi selesai! Jalankan 'shlt' di terminal Anda."
