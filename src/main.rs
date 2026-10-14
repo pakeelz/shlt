@@ -1,19 +1,32 @@
-mod animate;
+use crate::{app::App, storage::need_update};
+
 mod api;
 mod app;
-mod cache;
-mod cli;
-mod dev;
 mod error;
-mod models;
-mod req;
 mod storage;
-mod tui;
-mod view;
 
 #[tokio::main]
 async fn main() {
-    if let Err(e) = app::run().await {
+    let mut app = App::new();
+
+    match need_update() {
+        Ok(need) => {
+            if !need {
+                if let Ok(shalat) = storage::read_config() {
+                    app.response_state(shalat);
+                }
+            } else {
+                app.set_updating_config_state();
+            }
+        }
+        Err(_e) => {}
+    }
+
+    let mut terminal = ratatui::init();
+
+    if let Err(e) = app.run(&mut terminal).await {
         eprintln!("{e}");
     }
+
+    ratatui::restore();
 }

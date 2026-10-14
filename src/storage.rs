@@ -1,74 +1,77 @@
-use std::{env, fs, path::PathBuf};
+use std::{env::home_dir, fs, path::PathBuf};
 
-use serde::{Deserialize, Serialize};
+use crate::{api::Schedule, error::AppError};
 
-use crate::error::AppError;
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Config {
-    location: Location,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Location {
-    provinsi: String,
-    kabkota: String,
-}
-
-impl Config {
-    fn from(provinsi: String, kabkota: String) -> Self {
-        let location = Location::from(provinsi, kabkota);
-        Self { location }
-    }
-
-    fn get_location(self) -> Location {
-        self.location
-    }
-}
-
-impl Location {
-    fn from(provinsi: String, kabkota: String) -> Self {
-        Self { provinsi, kabkota }
-    }
-
-    pub fn get_provinsi(&self) -> &str {
-        &self.provinsi
-    }
-
-    pub fn get_kabkota(&self) -> &str {
-        &self.kabkota
-    }
-}
-
-pub fn write_config(provinsi: String, kabkota: String) -> Result<(), AppError> {
-    let home_dir = env::var("HOME")
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| PathBuf::from("."));
-
-    let cnfg = Config::from(provinsi, kabkota);
-
-    let mut config_dir = home_dir;
-    config_dir.push(".config");
-    config_dir.push("shlt");
+pub fn write_config(data: &Schedule) -> Result<(), AppError> {
+    let mut config_dir = home_dir().unwrap_or_else(|| PathBuf::from("."));
+    config_dir.push(".config/shlt");
 
     fs::create_dir_all(&config_dir)?;
 
     let mut config_file = config_dir;
-    config_file.push("config.toml");
+    config_file.push("shlt.json");
 
-    let config_content = toml::to_string(&cnfg).unwrap();
+    let config_content = serde_json::to_string_pretty(data)?;
+
     fs::write(config_file, config_content)?;
+
     Ok(())
 }
 
-pub fn read_config() -> Result<Location, AppError> {
-    let home_dir = env::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    let mut config_file = home_dir;
-    config_file.push(".config");
-    config_file.push("shlt");
-    config_file.push("config.toml");
+pub fn need_update() -> Result<bool, AppError> {
+    let mut config_file = home_dir().unwrap_or_else(|| PathBuf::from("."));
+    config_file.push(".config/shlt/shlt.json");
 
     let config_content = fs::read_to_string(config_file)?;
-    let content = toml::from_str::<Config>(&config_content)?;
-    Ok(content.get_location())
+    let content = serde_json::from_str::<Schedule>(&config_content)?;
+
+    let tanggal_lengkap: &Vec<&str> = &content.data[0].tanggal_lengkap.splitn(3, '-').collect();
+
+    let month = tanggal_lengkap[1]
+        .parse::<u8>()
+        .map_err(|f| AppError::Other(f.to_string()))?;
+
+    if month == month_now()? {
+        return Ok(false);
+    }
+
+    Ok(true)
+}
+
+pub fn read_config() -> Result<Schedule, AppError> {
+    let mut config_file = home_dir().unwrap_or_else(|| PathBuf::from("."));
+    config_file.push(".config/shlt/shlt.json");
+
+    let config_content = fs::read_to_string(config_file)?;
+    let shalat = serde_json::from_str::<Schedule>(&config_content)?;
+
+    Ok(shalat)
+}
+
+fn month_now() -> Result<u8, AppError> {
+    let month = chrono::Local::now().format("%m").to_string();
+    let month = month
+        .parse::<u8>()
+        .map_err(|f| AppError::Other(f.to_string()))?;
+    Ok(month)
+}
+
+// #[tokio::test]
+// async fn test_write() {
+//     let shalat = get_jadwal_sholat("Jawa Timur", "Kab. Pasuruan")
+//         .await
+//         .unwrap();
+//     write_config(&shalat).unwrap();
+// }
+
+#[test]
+fn test_check_config() {
+    let _test = need_update().unwrap();
+    println!("{}", _test);
+}
+
+#[test]
+fn test_read() {
+    let shalat = read_config().unwrap();
+    println!("{:?}", shalat);
 }

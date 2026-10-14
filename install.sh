@@ -32,7 +32,36 @@ echo "==> Memasang shlt ke $INSTALL_DIR (memerlukan izin sudo)..."
 sudo mv "$TMP_DIR/shlt" "$INSTALL_DIR/shlt"
 sudo chmod +x "$INSTALL_DIR/shlt"
 
-# cleanup
+# Cleanup
 rm -rf "$TMP_DIR"
+
+# Create share dir and tmp dir
+TMP_DIR=$(mktemp -d)
+SHARE_DIR="$HOME/.local/share/shlt"
+
+mkdir -p $SHARE_DIR
+curl -o "$TMP_DIR/shlt.png" https://raw.githubusercontent.com/pakeelz/shlt/main/src/assets/shlt.png
+
+mv "$TMP_DIR/shlt.png" "$SHARE_DIR/shlt.png"
+
+# Cleanup
+rm -rf "$TMP_DIR"
+
+# Create .desktop file
+applicationsDir="$HOME/.local/share/applications/"
+mkdir -p "$applicationsDir"
+
+shltApp="$applicationsDir/shlt.desktop"
+
+cat <<EOF >$shltApp
+[Desktop Entry]
+Type=Application
+Name=Shlt
+Comment=Jadwal Sholat Indonesia
+Exec=/usr/local/bin/shlt -t
+Icon=/home/pakel/dev/save-time.png
+Terminal=true
+Categories=Utility;Development;
+EOF
 
 echo "==> Instalasi selesai! Jalankan 'shlt' di terminal Anda."

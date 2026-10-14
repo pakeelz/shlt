@@ -22,10 +22,6 @@
 ## 💻 Penggunaan
 
 * Cukup gunakan `shlt` di dalam terminal yang nanti akan muncul menu yang berisi provinsi dan kabupaten kota
-* Jika ingin memasukkan kabupaten / kota secara spesifik: `shlt jawa timur -k kab. sidoarjo`
-* Gunakan flag `-d` untuk membuat kabupaten / kota yang dipilih sebelumnya menjadi *default* sehingga command `shlt` akan langsung menampilkan jadwal sholat
-* Gunakan flag `-n` untuk memunculkan pilihan menu yang berisi provinsi dan kabupaten kota
-
 
 ## 🚀 Instalasi
 
