@@ -35,18 +35,6 @@ sudo chmod +x "$INSTALL_DIR/shlt"
 # Cleanup
 rm -rf "$TMP_DIR"
 
-# Create share dir and tmp dir
-TMP_DIR=$(mktemp -d)
-SHARE_DIR="$HOME/.local/share/shlt"
-
-mkdir -p $SHARE_DIR
-curl -o "$TMP_DIR/shlt.png" https://raw.githubusercontent.com/pakeelz/shlt/main/src/assets/shlt.png
-
-mv "$TMP_DIR/shlt.png" "$SHARE_DIR/shlt.png"
-
-# Cleanup
-rm -rf "$TMP_DIR"
-
 # Create .desktop file
 applicationsDir="$HOME/.local/share/applications/"
 mkdir -p "$applicationsDir"
@@ -59,7 +47,6 @@ Type=Application
 Name=Shlt
 Comment=Jadwal Sholat Indonesia
 Exec=/usr/local/bin/shlt
-Icon=/home/pakel/.local/share/shlt/shlt.png
 Terminal=true
 Categories=Utility;Development;
 EOF
