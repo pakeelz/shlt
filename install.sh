@@ -40,7 +40,7 @@ TMP_DIR=$(mktemp -d)
 SHARE_DIR="$HOME/.local/share/shlt"
 
 mkdir -p $SHARE_DIR
-curl -o "$TMP_DIR/shlt.png" https://raw.githubusercontent.com/pakeelz/shlt/main/assets/shlt.png
+curl -o "$TMP_DIR/shlt.png" https://raw.githubusercontent.com/pakeelz/shlt/main/assets/mosque.png
 
 mv "$TMP_DIR/shlt.png" "$SHARE_DIR/shlt.png"
 
