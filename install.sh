@@ -59,6 +59,7 @@ Type=Application
 Name=Shlt
 Comment=Jadwal Sholat Indonesia
 Exec=/usr/local/bin/shlt
+Icon=/home/pakel/.local/share/shlt/shlt.png
 Terminal=true
 Categories=Utility;Development;
 EOF
