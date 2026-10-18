@@ -1,12 +1,13 @@
 use std::error::Error;
 
 #[allow(dead_code)]
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum AppError {
     ConnectionError,
     TuiError(String),
     ConfigNotFound,
     WriteConfigError(String),
+    TerminalToSmall,
     Other(String),
 }
 
@@ -18,6 +19,7 @@ impl std::fmt::Display for AppError {
             AppError::TuiError(e) => write!(f, "TUI Error: {e}"),
             AppError::ConfigNotFound => write!(f, "Config Not Found"),
             AppError::WriteConfigError(e) => write!(f, "Write Config Error: {e}"),
+            AppError::TerminalToSmall => write!(f, "Terminal to small"),
             AppError::Other(e) => write!(f, "{e}"),
         }
     }

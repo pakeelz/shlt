@@ -3,7 +3,10 @@ mod render;
 
 use std::time::Duration;
 
-use crossterm::event::{Event, EventStream, KeyCode};
+use crossterm::{
+    event::{Event, EventStream, KeyCode},
+    terminal,
+};
 use futures_util::StreamExt;
 use ratatui::{DefaultTerminal, widgets::ListState};
 
@@ -15,6 +18,7 @@ use crate::{
 
 pub struct App {
     state: AppState,
+    previous_state: Option<AppState>,
     data_shalat: Option<Schedule>,
     mode: Mode,
     exit: bool,
@@ -31,7 +35,7 @@ pub struct App {
 }
 
 #[allow(dead_code)]
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum AppState {
     Response(Schedule),
     WaitingResponse,
@@ -61,6 +65,7 @@ impl App {
 
         Self {
             state: AppState::ShowProvince,
+            previous_state: None,
             data_shalat: None,
             mode: Mode::Display,
             exit: false,
@@ -119,10 +124,11 @@ impl App {
         interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
 
         while !self.exit {
+            self.handle_terminal_size()?;
             match &self.state {
                 AppState::Response(shalat) => {
                     self.set_data_shalat(shalat.clone());
-                    self.render_response(terminal)?;
+                    self.render_response(terminal)?
                 }
                 AppState::ShowProvince | AppState::ProvinceFilter => {
                     self.render_all_province(terminal)?
@@ -325,6 +331,20 @@ impl App {
                         }
                     }
                 }
+            }
+        }
+        Ok(())
+    }
+
+    fn handle_terminal_size(&mut self) -> Result<(), AppError> {
+        let (cols, rows) = terminal::size()?;
+        if rows < 14 || cols < 28 {
+            self.previous_state = Some(self.state.clone());
+            self.state = AppState::Error(AppError::TerminalToSmall)
+        } else {
+            if let Some(state) = &self.previous_state {
+                self.state = state.clone();
+                self.previous_state = None;
             }
         }
         Ok(())

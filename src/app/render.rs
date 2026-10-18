@@ -15,8 +15,6 @@ use ratatui::{
 };
 
 impl App {
-    // FMS
-    // Sesuaikan header agar tidak teralu lebar atau pendek
     pub fn render_response(&self, terminal: &mut DefaultTerminal) -> Result<(), AppError> {
         let (cols, rows) = terminal::size()?;
         if let Some(shalat) = &self.data_shalat {
@@ -24,7 +22,12 @@ impl App {
                 let header = &shalat.kabkota;
                 let jadwal = &shalat.data[time_now()];
 
-                let (x, y, width, height) = ((cols - 36) / 2, (rows - 14) / 2, 36u16, 14u16);
+                let (x, y, width, height) = (
+                    (cols.saturating_sub(36)) / 2,
+                    (rows.saturating_sub(14)) / 2,
+                    36u16,
+                    14u16,
+                );
 
                 let rect = Rect::new(x, y, width, height);
                 let [top, bottom] = Layout::default()
@@ -72,7 +75,12 @@ impl App {
     pub fn render_waiting_response(&self, terminal: &mut DefaultTerminal) -> Result<(), AppError> {
         let (cols, rows) = terminal::size()?;
         terminal.draw(|frame| {
-            let (x, y, width, height) = ((cols - 30) / 2, (rows - 3) / 2, 30u16, 3u16);
+            let (x, y, width, height) = (
+                (cols.saturating_sub(30)) / 2,
+                (rows.saturating_sub(3)) / 2,
+                30u16,
+                3u16,
+            );
 
             let rect = Rect::new(x, y, width, height);
 
@@ -95,7 +103,10 @@ impl App {
 
             let width = message.len() as u16 + 6;
             let height = 3u16;
-            let (x, y) = ((cols - width) / 2, (rows - height) / 2);
+            let (x, y) = (
+                (cols.saturating_sub(width)) / 2,
+                (rows.saturating_sub(height)) / 2,
+            );
 
             let rect = Rect::new(x, y, width, height);
 
@@ -110,7 +121,12 @@ impl App {
     pub fn render_all_province(&mut self, terminal: &mut DefaultTerminal) -> Result<(), AppError> {
         let (cols, rows) = terminal::size()?;
         terminal.draw(|frame| {
-            let (x, y, width, height) = ((cols - 36) / 2, (rows - 13) / 2, 36u16, 13u16);
+            let (x, y, width, height) = (
+                (cols.saturating_sub(36)) / 2,
+                (rows.saturating_sub(13)) / 2,
+                36u16,
+                13u16,
+            );
 
             let rect = Rect::new(x, y, width, height);
 
@@ -179,7 +195,12 @@ impl App {
     pub fn render_all_kabkota(&mut self, terminal: &mut DefaultTerminal) -> Result<(), AppError> {
         let (cols, rows) = terminal::size()?;
         terminal.draw(|frame| {
-            let (x, y, width, height) = ((cols - 40) / 2, (rows - 13) / 2, 40u16, 13u16);
+            let (x, y, width, height) = (
+                (cols.saturating_sub(40)) / 2,
+                (rows.saturating_sub(13)) / 2,
+                40u16,
+                13u16,
+            );
 
             let rect = Rect::new(x, y, width, height);
 
@@ -252,7 +273,12 @@ impl App {
     ) -> Result<(), AppError> {
         let (cols, rows) = terminal::size()?;
         terminal.draw(|frame| {
-            let (x, y, width, height) = ((cols - 40) / 2, (rows - 3) / 2, 40u16, 3u16);
+            let (x, y, width, height) = (
+                (cols.saturating_sub(40)) / 2,
+                (rows.saturating_sub(3)) / 2,
+                40u16,
+                3u16,
+            );
             let rect = Rect::new(x, y, width, height);
             let paragraph = Paragraph::new(error.to_string())
                 .block(Block::bordered())
@@ -267,7 +293,12 @@ impl App {
         if let Some(message) = &self.message {
             let (cols, rows) = terminal::size()?;
             let height = message.len() as u16 + 6;
-            let (x, y, width, height) = ((cols - height) / 2, (rows - 3) / 2, height, 3u16);
+            let (x, y, width, height) = (
+                (cols.saturating_sub(height)) / 2,
+                (rows.saturating_sub(3)) / 2,
+                height,
+                3u16,
+            );
 
             let rect = Rect::new(x, y, width, height);
             let paragraph = Paragraph::new(message.as_str())
