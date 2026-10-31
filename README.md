@@ -28,7 +28,7 @@
 ### Dari Repositori (Source Code)
 
 ```bash
-git clone [https://github.com/username/shlt.git](https://github.com/username/shlt.git)
+git clone https://github.com/pakeelz/shlt.git
 cd shlt
 cargo install --path .
 ```
