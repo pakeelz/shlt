@@ -11,7 +11,10 @@ use ratatui::{
         Color::{self},
         Style, Stylize,
     },
-    widgets::{Block, List, ListItem, Padding, Paragraph, Scrollbar, ScrollbarState, Wrap},
+    widgets::{
+        Block, BorderType, Borders, List, ListItem, Padding, Paragraph, Scrollbar, ScrollbarState,
+        Wrap,
+    },
 };
 
 impl App {
@@ -19,20 +22,29 @@ impl App {
         let (cols, rows) = terminal::size()?;
         if let Some(shalat) = &self.data_shalat {
             terminal.draw(|frame| {
-                let header = &shalat.kabkota;
-                let jadwal = &shalat.data[time_now()];
+                let kabkota = &shalat.kabkota;
+                let jadwal = &shalat.data[time_now() - 1];
 
                 let (x, y, width, height) = (
                     (cols.saturating_sub(36)) / 2,
                     (rows.saturating_sub(14)) / 2,
                     36u16,
-                    14u16,
+                    19u16,
+                );
+
+                let background = Paragraph::new("").bg(Color::from_u32(0xff1e2326));
+                let header = concat!(
+                    " ████ █   █ █     █████\n",
+                    "█     █   █ █       █  \n",
+                    " ███  █████ █       █  \n",
+                    "    █ █   █ █       █  \n",
+                    "████  █   █ █████   █  \n"
                 );
 
                 let rect = Rect::new(x, y, width, height);
                 let [top, bottom] = Layout::default()
                     .direction(Direction::Vertical)
-                    .constraints([Constraint::Length(3), Constraint::Fill(1)])
+                    .constraints([Constraint::Length(7), Constraint::Fill(1)])
                     .areas(rect);
 
                 let [main, fotter] = Layout::default()
@@ -41,26 +53,35 @@ impl App {
                     .areas(bottom);
 
                 let header = Paragraph::new(header.to_string())
-                    .block(Block::bordered())
+                    .block(Block::new().borders(Borders::BOTTOM))
+                    .fg(Color::Yellow)
                     .centered();
 
                 let content = Paragraph::new(vec![
-                    format!("Subuh: {}", jadwal.subuh).into(),
-                    format!("Dzuhur: {}", jadwal.dzuhur).into(),
-                    format!("Ashar: {}", jadwal.ashar).into(),
-                    format!("Maghrib: {}", jadwal.maghrib).into(),
-                    format!("Isya: {}", jadwal.isya).into(),
+                    format!("Subuh   : {}", jadwal.subuh).into(),
+                    format!("Dzuhur  : {}", jadwal.dzuhur).into(),
+                    format!("Ashar   : {}", jadwal.ashar).into(),
+                    format!("Maghrib : {}", jadwal.maghrib).into(),
+                    format!("Isya    : {}", jadwal.isya).into(),
+                    "".into(),
+                    format!("{} - {}", kabkota, jadwal.tanggal_lengkap).into(),
                 ])
-                .block(Block::bordered())
-                .centered();
+                .centered()
+                .yellow();
 
                 let fot = Paragraph::new(vec![
                     "Press N for new session".into(),
                     "Press D to make it default".into(),
                 ])
-                .block(Block::bordered().title_bottom(" <q> Exit "))
+                .block(
+                    Block::bordered()
+                        .title_bottom(" <q> Exit ")
+                        .border_type(BorderType::Rounded),
+                )
+                .red()
                 .centered();
 
+                frame.render_widget(background, frame.area());
                 frame.render_widget(header, top);
                 frame.render_widget(content, main);
                 frame.render_widget(fot, fotter);
