@@ -1,5 +1,5 @@
 use crate::{
-    app::{App, time_now},
+    app::{self, App, time_now},
     error::AppError,
 };
 
@@ -32,7 +32,6 @@ impl App {
                     19u16,
                 );
 
-                let background = Paragraph::new("").bg(Color::from_u32(0xff1e2326));
                 let header = concat!(
                     " ████ █   █ █     █████\n",
                     "█     █   █ █       █  \n",
@@ -81,7 +80,7 @@ impl App {
                 .red()
                 .centered();
 
-                frame.render_widget(background, frame.area());
+                app::utils::background_color(frame, Color::from_u32(0xff1e2326));
                 frame.render_widget(header, top);
                 frame.render_widget(content, main);
                 frame.render_widget(fot, fotter);
@@ -112,6 +111,7 @@ impl App {
                 .wrap(Wrap { trim: true })
                 .centered();
 
+            app::utils::background_color(frame, Color::from_u32(0xff1e2326));
             frame.render_widget(paragraph, rect);
         })?;
         Ok(())
@@ -133,6 +133,7 @@ impl App {
 
             let paragraph = Paragraph::new(message).block(Block::bordered()).centered();
 
+            app::utils::background_color(frame, Color::from_u32(0xff1e2326));
             frame.render_widget(paragraph, rect);
         })?;
 
@@ -188,6 +189,7 @@ impl App {
             let mut scrollbar_state = ScrollbarState::new(items.len())
                 .position(self.province_state.selected().unwrap_or_else(|| 0));
 
+            app::utils::background_color(frame, Color::from_u32(0xff1e2326));
             frame.render_stateful_widget(list, bottom, &mut self.province_state);
             frame.render_stateful_widget(
                 scrollbar,
@@ -262,6 +264,7 @@ impl App {
             let mut scrollbar_state = ScrollbarState::new(items.len())
                 .position(self.province_state.selected().unwrap_or_else(|| 0));
 
+            app::utils::background_color(frame, Color::from_u32(0xff1e2326));
             frame.render_stateful_widget(list, bottom, &mut self.province_state);
             frame.render_stateful_widget(
                 scrollbar,
@@ -304,6 +307,7 @@ impl App {
             let paragraph = Paragraph::new(error.to_string())
                 .block(Block::bordered())
                 .centered();
+            app::utils::background_color(frame, Color::from_u32(0xff1e2326));
             frame.render_widget(paragraph, rect);
         })?;
 
@@ -325,6 +329,7 @@ impl App {
             let paragraph = Paragraph::new(message.as_str())
                 .block(Block::bordered().bg(Color::Yellow).fg(Color::Black))
                 .centered();
+            app::utils::background_color(frame, Color::from_u32(0xff1e2326));
             frame.render_widget(paragraph, rect);
         }
         Ok(())

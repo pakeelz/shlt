@@ -1,5 +1,6 @@
 mod events;
 mod render;
+mod utils;
 
 use std::time::Duration;
 
