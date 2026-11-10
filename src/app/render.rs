@@ -25,11 +25,12 @@ impl App {
                 let kabkota = &shalat.kabkota;
                 let jadwal = &shalat.data[time_now() - 1];
 
-                let (x, y, width, height) = (
-                    (cols.saturating_sub(36)) / 2,
-                    (rows.saturating_sub(14)) / 2,
-                    36u16,
-                    19u16,
+                let width = 36u16;
+                let height = 19u16;
+
+                let (x, y) = (
+                    (cols.saturating_sub(width)) / 2,
+                    (rows.saturating_sub(height)) / 2,
                 );
 
                 let header = concat!(
