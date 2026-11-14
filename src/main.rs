@@ -3,10 +3,12 @@ use crate::{app::App, storage::need_update};
 mod api;
 mod app;
 mod error;
+mod setup;
 mod storage;
 
 #[tokio::main]
 async fn main() {
+    setup::setup().await;
     let mut app = App::new();
 
     match need_update() {

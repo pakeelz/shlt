@@ -122,11 +122,3 @@ pub async fn get_possible_kabkota(provinsi: &str) -> Result<KabKota, AppError> {
 
     Ok(response)
 }
-
-#[tokio::test]
-async fn test_jadwal() {
-    let jadwal = get_jadwal_sholat("Jawa Timur", "Kab. Pasuruan")
-        .await
-        .unwrap();
-    println!("{jadwal:?}");
-}

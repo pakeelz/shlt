@@ -55,23 +55,3 @@ fn month_now() -> Result<u8, AppError> {
         .map_err(|f| AppError::Other(f.to_string()))?;
     Ok(month)
 }
-
-// #[tokio::test]
-// async fn test_write() {
-//     let shalat = get_jadwal_sholat("Jawa Timur", "Kab. Pasuruan")
-//         .await
-//         .unwrap();
-//     write_config(&shalat).unwrap();
-// }
-
-#[test]
-fn test_check_config() {
-    let _test = need_update().unwrap();
-    println!("{}", _test);
-}
-
-#[test]
-fn test_read() {
-    let shalat = read_config().unwrap();
-    println!("{:?}", shalat);
-}
